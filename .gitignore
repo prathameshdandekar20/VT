@@ -1,0 +1,18 @@
+# OS & Editor files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.tmp
+*.log
+
+# Temp & IDE directories
+.vscode/
+.idea/
+*.swp
+*~
+
+# Backups
+mobivise_php_backup/
+

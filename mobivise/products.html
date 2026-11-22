@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Smartphones — Mobivise</title>
+  
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%237EAA31%22 stroke-width=%222%22><rect x=%225%22 y=%222%22 width=%2214%22 height=%2220%22 rx=%223%22/><path d=%22M12 18h.01%22/></svg>">
+</head>
+<body>
+  <!-- Clean Apple-style Botanical Navbar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <!-- Brand Logo -->
+      <a href="index.html" class="brand-logo-wrap">
+        <svg class="brand-phone-leaf" width="30" height="34" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2.5" y="2.5" width="22" height="31" rx="4.5" stroke="#7EAA31" stroke-width="2.5" fill="none"/>
+          <line x1="11.5" y1="30" x2="15.5" y2="30" stroke="#7EAA31" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 18C12 13 18 10 24 8C23 15 19 21 14 21C12 21 12 19 12 18Z" fill="#7EAA31"/>
+          <path d="M13.5 19.5C16 16 19 13.5 23 11" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-text-col">
+          <span class="brand-title">Mobivise</span>
+          <span class="brand-sub">Smartphone Purchasing Guide</span>
+        </div>
+      </a>
+
+      <!-- Center Nav Links -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html" class="active">Explore Phones</a></li>
+          <li>
+            <a href="compare.html" class="compare-nav-link">
+              Compare <span class="compare-count-badge" style="display:none;">0</span>
+            </a>
+          </li>
+          <li><a href="recommendations.html">Smart Finder</a></li>
+          <li><a href="brands.html">Brands</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right Action: Circular Search Button -->
+      <div class="nav-actions">
+        <button type="button" class="btn-circle-search" id="btnOpenSearchModal" aria-label="Search smartphones">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button class="btn-mobile-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open');">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Quick Search Overlay Modal -->
+  <div id="globalSearchModal" class="search-modal-backdrop" style="display:none;">
+    <div class="search-modal-card">
+      <div class="search-modal-header">
+        <svg width="20" height="20" fill="none" stroke="#6F7C78" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="modalSearchInput" placeholder="Search smartphone model, brand, processor..." autocomplete="off">
+        <button type="button" id="btnCloseSearchModal" class="search-modal-close">&times;</button>
+      </div>
+      <div id="modalSearchSuggest" class="search-modal-results"></div>
+    </div>
+  </div>
+
+  <main class="main-content">
+    <div class="container" style="padding-top: 24px; padding-bottom: 60px;">
+      <!-- Page Header -->
+      <div class="page-header" style="text-align: left; margin-bottom: 20px;">
+        <h1 class="page-header-title" style="font-size: 2rem;">Explore Smartphones</h1>
+        <p class="page-header-desc" style="margin: 0; font-size: 0.95rem;">Filter and compare verified specifications across 12 leading brands.</p>
+      </div>
+
+      <!-- Active Filter Chips -->
+      <div id="activeFilterChips" style="display:none; gap:8px; flex-wrap:wrap; margin-bottom:16px;"></div>
+
+      <div class="explorer-layout">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+          <div class="filter-header">
+            <h3>Filters</h3>
+            <button type="button" class="btn-reset-filters" id="btnResetFilters" style="background:none; border:none; cursor:pointer;">Reset</button>
+          </div>
+
+          <!-- Keyword Search -->
+          <div class="filter-group">
+            <div class="filter-title">Search Models</div>
+            <input type="text" id="filterSearch" placeholder="Model, brand, chipset..." class="custom-select" style="width:100%; box-sizing:border-box;">
+          </div>
+
+          <!-- Brands -->
+          <div class="filter-group">
+            <div class="filter-title">Brand</div>
+            <div class="filter-options-list" id="filterBrandsList">
+              <!-- Populated dynamically via JS with exact counts -->
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div class="filter-group">
+            <div class="filter-title">Price Range (₹)</div>
+            <div class="price-range-inputs" style="margin-bottom:8px;">
+              <input type="number" id="filterMinPrice" placeholder="Min" min="0" step="1000">
+              <span style="color:var(--text-secondary);">&ndash;</span>
+              <input type="number" id="filterMaxPrice" placeholder="Max" min="0" step="1000">
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-secondary btn-sm filter-budget-quick-pill" data-min="0" data-max="15000" style="padding:2px 8px; font-size:0.75rem;">&lt; 15k</button>
+              <button type="button" class="btn btn-secondary btn-sm filter-budget-quick-pill" data-min="15000" data-max="30000" style="padding:2px 8px; font-size:0.75rem;">15k–30k</button>
+              <button type="button" class="btn btn-secondary btn-sm filter-budget-quick-pill" data-min="30000" data-max="50000" style="padding:2px 8px; font-size:0.75rem;">30k–50k</button>
+              <button type="button" class="btn btn-secondary btn-sm filter-budget-quick-pill" data-min="50000" data-max="" style="padding:2px 8px; font-size:0.75rem;">&gt; 50k</button>
+            </div>
+          </div>
+
+          <!-- RAM Filter -->
+          <div class="filter-group">
+            <div class="filter-title">RAM Capacity</div>
+            <div id="filterRamContainer" style="display:flex; gap:6px; flex-wrap:wrap;">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+
+          <!-- 5G Toggle -->
+          <div class="filter-group">
+            <label class="custom-control" style="font-weight:700;">
+              <input type="checkbox" id="filter5gOnly">
+              <span>5G Ready Only</span>
+            </label>
+          </div>
+        </aside>
+
+        <!-- Right Content / Catalog -->
+        <section class="explorer-main">
+          <!-- Top Sort & Count Bar -->
+          <div class="explorer-topbar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+            <div class="results-count-text" id="resultsCount" style="font-weight:700; color:var(--text-secondary);">Loading catalogue...</div>
+
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              <!-- View Switcher: Cards vs Scatter Matrix -->
+              <div class="view-mode-switch" style="display:inline-flex; background:#EBF2EE; padding:3px; border-radius:999px;">
+                <button type="button" class="view-toggle-btn active" id="btnViewGrid" title="Switch to Card Grid View">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  <span>Cards</span>
+                </button>
+                <button type="button" class="view-toggle-btn" id="btnViewMatrix" title="Switch to Price vs Performance Decision Matrix">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  <span>Analytics Matrix</span>
+                </button>
+              </div>
+
+              <!-- Sort Dropdown -->
+              <div style="display:flex; align-items:center; gap:6px;">
+                <label for="sortSelect" style="font-size:0.82rem; color:var(--text-secondary); font-weight:600;">Sort:</label>
+                <select id="sortSelect" class="custom-select" style="padding:6px 12px; font-size:0.82rem;">
+                  <option value="popularity_desc">Popularity (High to Low)</option>
+                  <option value="vfm_desc">Value-for-Money (VFM Index)</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="launch_desc">Latest Release</option>
+                  <option value="name_asc">Model Name (A–Z)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Price vs Performance Bubble Matrix Container -->
+          <div id="analyticsMatrixContainer" style="display:none; background:#FFFFFF; border-radius:18px; border:1px solid var(--border-light); padding:24px; box-shadow:0 4px 16px rgba(0,0,0,0.03); margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+              <div>
+                <h3 style="font-size:1.15rem; font-weight:800; color:#101413; margin:0 0 4px;">Price vs. Performance Decision Matrix</h3>
+                <p style="font-size:0.85rem; color:#6F7C78; margin:0;">
+                  Bubble size represents battery capacity (mAh). Green indicates high Value-for-Money (VFM). Click any bubble to view specs.
+                </p>
+              </div>
+              <div style="display:flex; gap:8px; font-size:0.75rem; font-weight:700; flex-wrap:wrap;">
+                <span style="display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:999px; background:#E8F8ED; color:#1A7F37;">● Top-Left: High VFM Sweet Spot</span>
+                <span style="display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:999px; background:#EFF6FF; color:#1D4ED8;">● Top-Right: Ultra Flagships</span>
+              </div>
+            </div>
+            <div style="position:relative; height:450px; width:100%;">
+              <canvas id="pricePerfChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Dynamic Smartphones Grid -->
+          <div class="phone-grid" id="smartphonesGrid">
+            <!-- Dynamically populated via assets/js/products.js with exact device images -->
+          </div>
+
+          <!-- Dynamic Pagination -->
+          <div id="paginationControls"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Clean Apple-style Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-logo" style="margin-bottom: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;stroke:var(--brand-green);"><rect x="5" y="2" width="14" height="20" rx="3"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            <span>Mobi<span style="color:var(--brand-green);">vise</span></span>
+          </div>
+          <p>
+            An intelligent smartphone purchasing guide helping buyers make sense of complex specifications through rule-based scoring and objective side-by-side comparisons.
+          </p>
+          <span class="footer-badge">BTech CSE College Project</span>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Explorer</a></li>
+            <li><a href="recommendations.html">Smart Finder</a></li>
+            <li><a href="compare.html">Compare</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Directories</h4>
+          <ul>
+            <li><a href="brands.html">Brand Explorer</a></li>
+            <li><a href="about.html">About Project</a></li>
+            <li><a href="about.html#algorithm">Scoring Formula</a></li>
+            <li><a href="about.html#schema">Database Schema</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Architecture</h4>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+            Built with pure HTML5, Vanilla CSS3, Vanilla JS, and JSON dataset. 100% framework-free &amp; serverless.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Mobivise. BTech CSE Project. Specifications sourced from official manufacturer records.</div>
+        <div>
+          <a href="products.html" style="color:var(--text-secondary);margin-right:14px;">Browse Catalogue</a>
+          <a href="recommendations.html" style="color:var(--forest-green);font-weight:700;">Find My Phone &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/chart.min.js"></script>
+  <script src="data/smartphones-data.js?v=2.2"></script>
+  <script src="assets/js/main.js?v=2.2"></script>
+  <script src="assets/js/products.js?v=2.2"></script>
+</body>
+</html>
